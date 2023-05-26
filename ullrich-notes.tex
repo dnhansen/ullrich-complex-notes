@@ -1,0 +1,611 @@
+% Document setup
+\documentclass[article, a4paper, 11pt, oneside]{memoir}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[UKenglish]{babel}
+
+% Document info
+\newcommand\doctitle{Ullrich, \emph{Complex Made Simple}}
+\newcommand\docauthor{Danny Nygård Hansen}
+
+% Formatting and layout
+\usepackage[autostyle]{csquotes}
+\usepackage[final]{microtype}
+\usepackage{xcolor}
+\frenchspacing
+\usepackage{latex-sty/articlepagestyle}
+\usepackage{latex-sty/articlesectionstyle}
+% \usepackage{latex-sty/amalgsymbol}
+
+% Fonts
+\usepackage[largesmallcaps]{kpfonts}
+\DeclareSymbolFontAlphabet{\mathrm}{operators} % https://tex.stackexchange.com/questions/40874/kpfonts-siunitx-and-math-alphabets
+\linespread{1.06}
+\let\mathfrak\undefined
+\usepackage{eufrak}
+\usepackage{inconsolata}
+% \usepackage{amssymb}
+
+% Hyperlinks
+\usepackage{hyperref}
+\definecolor{linkcolor}{HTML}{4f4fa3}
+\hypersetup{%
+	pdftitle=\doctitle,
+	pdfauthor=\docauthor,
+	colorlinks,
+	linkcolor=linkcolor,
+	citecolor=linkcolor,
+	urlcolor=linkcolor,
+	bookmarksnumbered=true
+}
+
+% Equation numbering
+\numberwithin{equation}{chapter}
+
+% Footnotes
+\footmarkstyle{\textsuperscript{#1}\hspace{0.25em}}
+
+% Mathematics
+\usepackage{latex-sty/basicmathcommands}
+\usepackage{latex-sty/framedtheorems}
+\usepackage{latex-sty/theoremrefs}
+\usepackage{latex-sty/topologycommands}
+\usepackage{tikz-cd}
+\tikzcdset{arrow style=math font} % https://tex.stackexchange.com/questions/300352/equalities-look-broken-with-tikz-cd-and-math-font
+\usetikzlibrary{babel}
+
+% Lists
+\usepackage{enumitem}
+\setenumerate[0]{label=\normalfont(\roman*)}
+\setlist{  
+  listparindent=\parindent,
+  parsep=0pt,
+}
+
+% Bibliography
+\usepackage[backend=biber, style=authoryear, maxcitenames=2, useprefix]{biblatex}
+\addbibresource{references.bib}
+
+% Title
+\title{\doctitle}
+\author{\docauthor}
+
+\newcommand{\setF}{\mathbb{F}}
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\strucS}{\mathfrak{S}}
+\DeclarePairedDelimiter{\gen}{\langle}{\rangle} % Generating set
+\newcommand{\frakL}{\mathfrak{L}}
+\newcommand{\frakN}{\mathfrak{N}}
+\newcommand{\frakA}{\mathfrak{A}}
+\newcommand{\frakB}{\mathfrak{B}}
+\newcommand{\ab}{\mathit{ab}}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\stab}{Stab}
+
+% Categories
+\newcommand{\cat}[1]{\mathcal{#1}}
+\newcommand{\scat}[1]{\mathbf{#1}} % category supposed to be small
+\newcommand{\ncat}[1]{\mathbf{#1}} % named categories like Set, Top
+
+\newcommand{\catSet}{\ncat{Set}} % Category of sets
+\newcommand{\catGrp}{\ncat{Grp}} % Category of groups
+\newcommand{\catAb}{\ncat{Ab}} % Category of abelian groups
+\newcommand{\catRing}{\ncat{Ring}} % Category of rings
+\newcommand{\catFld}{\ncat{Fld}} % Category of fields
+
+\newcommand{\catMod}[1]{{#1\text{-}\scat{Mod}}}
+\newcommand{\catRMod}{\catMod{R}}
+
+\newcommand{\End}{\mathrm{End}}
+\newcommand{\Hom}{\mathrm{Hom}}
+
+\DeclareMathOperator{\chr}{char}
+
+
+%% Framed exercise environment
+
+\mdfdefinestyle{swannexercise}{%
+    skipabove=0.5em plus 0.4em minus 0.2em,
+	skipbelow=0.5em plus 0.4em minus 0.2em,
+	leftmargin=-5pt,
+	rightmargin=-5pt,
+	innerleftmargin=5pt,
+	innerrightmargin=5pt,
+	innertopmargin=5pt,
+	innerbottommargin=4pt,
+	linewidth=0pt,
+	splittopskip=1.2em minus 0.2em,
+	splitbottomskip=0.5em plus 0.2em minus 0.1em,
+	backgroundcolor=backgroundcolor,
+	frametitlebackgroundcolor=titlecolor,
+	frametitlefont={\scshape},
+    theoremseparator={},
+    % theoremspace={},
+	frametitleaboveskip=3pt,
+	frametitlebelowskip=2pt
+}
+
+\mdtheorem[style=swannexercise]{exerciseframed}{Exercise}
+
+\let\oldexerciseframed\exerciseframed
+\renewcommand{\exerciseframed}{%
+  \crefalias{theorem}{exerciseframed}%
+  \oldexerciseframed}
+
+\usepackage{listofitems}
+
+\settocdepth{subsection}
+\renewenvironment{exerciseframed}[1][]{%
+    \setsepchar{.}%
+    \readlist*\mylist{#1}%
+    \def\smalllabel{\mylist[2].\mylist[3]}%
+    \refstepcounter{exerciseframed}%
+    % \addcontentsline{toc}{subsection}{Exercise \smalllabel}%
+    \begin{exerciseframed*}[#1]%
+    \label{ex:#1}%
+}{%
+    \end{exerciseframed*}%
+}
+
+% https://tex.stackexchange.com/a/23491/63353
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\newcommand{\exref}[1]{%
+    % \setsepchar{.}%
+    % \readlist*\mylist{#1}%
+    % \ifnum \arabic{chapter}=\mylist[1]
+    %     \def\mylabel{\mylist[2].\mylist[3]}%
+    % \else
+    %     \def\mylabel{\RNum{\mylist[1]}.\mylist[2].\mylist[3]}%
+    % \fi
+    \hyperref[ex:#1]{Exercise~#1}%
+}
+
+\theoremstyle{nonumberplain}
+\theoremsymbol{\ensuremath{\square}}
+\newtheorem{solution}{Solution}
+
+\let\oldsolution\solution
+\renewcommand{\solution}{%
+  \crefalias{theorem}{solution}%
+  \oldsolution}
+
+\newcommand{\solutionlabelfont}[1]{{\normalfont\color{linkcolor}#1}}
+\newlist{solutionsec}{enumerate}{1}
+\setlist[solutionsec]{leftmargin=0pt, parsep=0pt, listparindent=\parindent, font=\solutionlabelfont, label=(\roman*), labelsep=0pt, labelwidth=20pt, itemindent=20pt, align=left, itemsep=10pt}
+
+
+% \renewcommand{\thechapter}{\Roman{chapter}}
+% \renewcommand{\thesection}{\arabic{section}}
+
+\DeclarePairedDelimiter{\ord}{\lvert}{\rvert}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Inn}{Inn}
+
+\usepackage{caption} % Links to figures jump correctly
+\Crefname{figure}{Figure}{Figures}
+
+
+\newenvironment{displaytheorem}{%
+	\begin{displayquote}\itshape%
+}{%
+	\end{displayquote}%
+}
+
+
+\newcommand{\upset}{\operatorname{\uparrow}}
+\newcommand{\downset}{\operatorname{\downarrow}}
+\newcommand{\matgroup}[3]{\mathrm{#1}_{#2}(#3)}
+\newcommand{\GL}[2]{\matgroup{GL}{#1}{#2}}
+\newcommand{\SL}[2]{\matgroup{SL}{#1}{#2}}
+\newcommand{\catGSet}[1][G]{{#1\text{-}\catSet}}
+\newcommand{\frakI}{\mathfrak{I}}
+\newcommand{\field}{\mathbb{F}}
+\let\bigcoprod\coprod
+\renewcommand{\coprod}{\sqcup}
+
+
+% TODO for logic
+\renewcommand{\mylistlabelfont}[1]{{\normalfont\color{linkcolor}\textit{#1}:}}
+\newlist{notelist}{description}{1}
+\setlist[notelist]{leftmargin=0pt, parsep=0pt, listparindent=\parindent, font=\mylistlabelfont}
+
+
+\begin{document}
+
+\maketitle
+
+\setcounter{chapter}{-1}
+\chapter{Differentiability and the Cauchy--Riemann Equations}
+
+\begin{exerciseframed}[0.3]
+    Suppose that $T \colon \complex \to \complex$ is $\reals$-linear. Show that $T$ is $\complex$-linear if and only if $T(\iu z) = \iu Tz$ for all $z$.
+\end{exerciseframed}
+
+\begin{solution}
+    The \enquote{if} part is obvious, so we prove the \enquote{only if} part. If $T(\iu z) = \iu Tz$ for all $z$, then for $a,b \in \reals$ we have
+    %
+    \begin{equation*}
+        T((a + \iu b)z)
+            = T(az + \iu bz)
+            = a Tz + \iu T(bz)
+            = a Tz + \iu b Tz
+            = (a + \iu b) Tz,
+    \end{equation*}
+    %
+    as desired.
+\end{solution}
+
+
+\begin{exerciseframed}[0.4]
+    Suppose that $T \colon \reals^2 \to \reals^2$ is the $\reals$-linear mapping defined by the matrix
+    %
+    \begin{equation*}
+        \begin{pmatrix}
+            a & b \\
+            c & d
+        \end{pmatrix}.
+    \end{equation*}
+    %
+    Show that $T$ is $\complex$-linear if and only if $a = d$ and $b = -c$.
+\end{exerciseframed}
+
+\begin{solution}
+    Notice that, for $a,b,x,y \in \reals$,
+    %
+    \begin{equation*}
+        \begin{pmatrix}
+            a \\
+            b
+        \end{pmatrix}
+        \cdot_\complex
+        \begin{pmatrix}
+            x \\
+            y
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            ax - by \\
+            ay + bx
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            a & -b \\
+            b & a
+        \end{pmatrix}
+        \begin{pmatrix}
+            x \\
+            y
+        \end{pmatrix}.
+    \end{equation*}
+    %
+    That is, multiplication by a complex number $a + \iu b$ is the same as ordinary matrix multiplication by the matrix
+    %
+    \begin{equation*}
+        \begin{pmatrix}
+            a & -b \\
+            b & a
+        \end{pmatrix}.
+    \end{equation*}
+    %
+    Since matrix multiplication is associative, by [TODO ref] the requirement is that $T$ commutes with the matrix representing the imaginary unit $\iu$. This means that
+    %
+    \begin{equation*}
+        \begin{pmatrix}
+            a & b \\
+            c & d
+        \end{pmatrix}
+        \begin{pmatrix}
+            0 & -1 \\
+            1 & 0
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            b & -a \\
+            d & -c
+        \end{pmatrix}
+        \quad \text{should equal} \quad
+        \begin{pmatrix}
+            0 & -1 \\
+            1 & 0
+        \end{pmatrix}
+        \begin{pmatrix}
+            a & b \\
+            c & d
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            -c & -d \\
+            a & b
+        \end{pmatrix}.
+    \end{equation*}
+    %
+    And this is the case if and only if $a = d$ and $b = -c$ as claimed.
+
+    Note: The subring of $\mathrm{Mat}_2(\reals)$ representing $\complex$-linear maps is precisely the centraliser of the matrix of $\iu$.
+\end{solution}
+
+
+\chapter{Power Series}
+
+\chapter{Preliminary Results on Holomorphic Functions}
+
+\chapter{Elementary Results on Holomorphic Functions}
+
+\begin{remarkbreak}[Topological lemmas]
+    We give alternative proofs of Lemmas~3.3 and 3.4, using the covering definition of compactness.
+
+    For Lemma~3.3, let $d$ denote the Euclidean metric on $\complex$, and write $d(z,A)$ for the distance from $z \in \complex$ to $A \subseteq \complex$. It is well-known that this is continuous in $z$ for a fixed $A$, and that $d(z,A) = 0$ if and only if $z \in \closure{A}$. Since $K$ is compact, this obtains its minimum at some $z_0 \in K$. But then we must have $d(z_0,V^c) > 0$ since $V^c$ is closed. Then choose $\rho = d(z_0,V^c)/2$.
+
+    For Lemma~3.4 we use the Heine--Borel theorem. Since $K'$ is obviously bounded, it suffices to show that it is closed. To this end, let $w \in \complex \setminus K'$. The map $z \mapsto d(w,z)$ obtains its minimum $d(w,K)$ on $K$ at a point $z_0$. Notice that $d(w,K) > \rho$, since otherwise we would have $w \in \closure{D}(z_0,\rho) \subseteq K'$. Hence $D(w,d(w,K)-\rho)$ is disjoint from $K'$, so $\complex \setminus K'$ is open.
+\end{remarkbreak}
+
+
+\begin{remarkbreak}[Order of zeros]
+    \label{rem:order-of-zeros}
+    We show that the implication in Lemma~3.9 is an equivalence, i.e. that
+    %
+    \begin{displaytheorem}
+        A function $f \in H(V)$ has a zero of order $N$ at $z \in V$ if and only if there exists a $g \in H(V)$ with $g(z) \neq 0$ such that
+        %
+        \begin{equation*}
+            f(w)
+                = (w - z)^N g(w)
+        \end{equation*}
+        %
+        for all $w \in V$.
+    \end{displaytheorem}
+    %
+    The \textquote{only if} direction is just Lemma~3.9, so we prove the converse. In this case, the Leibniz differentiation rule implies that
+    %
+    \begin{equation*}
+        f^{(n)}(w)
+            = \sum_{k=0}^n \binom{n}{k} g^{(n-k)}(w) \frac{\dif^{k}}{\dif w^k} (w - z)^N
+    \end{equation*}
+    %
+    for all $n \in \naturals_0$. If $n < N$, then the $n$th derivative of $(w-z)^N$ is zero at $z$, so $f^{(n)}(z) = 0$. But if $n = N$, then all terms except the term $k = n$ vanish, so
+    %
+    \begin{equation*}
+        f^{(N)}(w)
+            = g(w) \frac{\dif^{N}}{\dif w^N} (w - z)^N
+            = g(w) N!,
+    \end{equation*}
+    %
+    so $f^{(N)}(z) \neq 0$. Hence $f$ has a zero of order $N$ at $z$.
+\end{remarkbreak}
+
+
+\begin{exerciseframed}[3.9]
+    Suppose that $V$ is a connected open set, $f \in H(V)$, and $f'(z) = 0$ for all $z \in V$. Show that $f$ is constant.
+\end{exerciseframed}
+
+\begin{solution}
+    Let $D(z_0,r) \subseteq V$. For $a,b \in D(z_0,r)$ we have
+    %
+    \begin{equation*}
+        f(b) - f(a)
+            = \int_{[a,b]} f'(z) \dif z
+            = 0,
+    \end{equation*}
+    %
+    so $f$ is constant on $D(z_0,r)$. Hence all derivatives of $f$ vanish at $z_0$, so Corollary~3.8 implies that $f$ is constant.
+\end{solution}
+
+
+\begin{exerciseframed}[3.19]
+    Suppose that $f \in H(D'(z_0,r))$. Show that $f$ has a pole of order $N$ at $z_0$ if and only if $1/f$ has a zero of order $N$ at $z_0$.
+\end{exerciseframed}
+
+\begin{solution}
+    First assume that $f$ has a pole of order $N$ at $z_0$. Then $f$ is on the form
+    %
+    \begin{equation*}
+        f(z)
+            = \sum_{n=-N}^\infty c_n (z-z_0)^n
+            = (z-z_0)^{-N} \sum_{n=0}^\infty c_{n-N} (z-z_0)^n
+            = (z-z_0)^{-N} h(z)
+    \end{equation*}
+    %
+    for $z \in D'(z_0,r)$, where $h(z) = \sum_{n=0}^\infty c_{n-N} (z-z_0)^n$ is holomorphic in $D(z_0,r)$ (it is holomorphic in the punctured disk, but it is a power series with a positive radius of convergence, hence is differentiable at $0$). Notice that $h(z_0) = c_{-N} \neq 0$. But then
+    %
+    \begin{equation*}
+        \frac{1}{f(z)}
+            = (z-z_0)^N \frac{1}{h(z)}
+    \end{equation*}
+    %
+    in a neighbourhood of $z_0$ (since $1/f$ has a removable singularity at $z_0$ by Lemma~3.13). And since $h(z_0) \neq 0$, $1/h$ is holomorphic in a neighbourhood of $z_0$. The claim now follows from \cref{rem:order-of-zeros}.
+
+    Now assume that $1/f$ has a zero of order $N$ at $z_0$. Then there is a $g \in H(D'(z_0,r))$ with $g(z_0) \neq 0$ such that
+    %
+    \begin{equation*}
+        \frac{1}{f(w)}
+            = (z - w)^N g(w),
+    \end{equation*}
+    %
+    by Lemma~3.9. But then
+    %
+    \begin{equation*}
+        f(w)
+            = (z - w)^{-N} \frac{1}{g(w)},
+    \end{equation*}
+    %
+    and $1/g$ is holomorphic near $z_0$ since it is nonzero there. Hence it is given by a power series, and the claim follows.
+\end{solution}
+
+
+\begin{exerciseframed}[3.20]
+    Suppose we agree that a pole of order $N$ is a zero of order $-N$, and that if $f$ is holomorphic near $z_0$ and $f(z_0) \neq 0$ then $f$ has a zero of order $0$ at $z_0$. Suppose that $f$ and $g$ are holomorphic in $D'(z_0, r)$ and have zeroes of order $n, m \in \naturals$ at $z_0$, respectively. Show that $fg$ has a zero of order $n + m$ at $z_0$.
+\end{exerciseframed}
+
+\begin{solution}
+    If $n,m \geq 0$, then the claim follows easily from \cref{rem:order-of-zeros}. By [TODO ref] Exercise~3.19 we only need to consider the case where $n > 0$ and $m \leq 0$. We thus have
+    %
+    \begin{equation*}
+        f(z)
+            = (z-z_0)^n h(z)
+        \quad \text{and} \quad
+        g(z)
+            = \sum_{k=m}^\infty c_k (z-z_0)^k,
+    \end{equation*}
+    %
+    where $h$ is holomorphic near $z_0$ and $h(z_0) \neq 0$, and $c_m \neq 0$. But then
+    %
+    \begin{equation*}
+        f(z)g(z)
+            = (z-z_0)^{n+m} h(z) \sum_{k=0}^\infty c_{k+m} (z-z_0)^k,
+    \end{equation*}
+    %
+    and since $h(z) \sum_{k=0}^\infty c_{k+m} (z-z_0)^k$ is holomorphic and nonzero at $z = z_0$ (since $h(z_0)$ and $c_m$ are nonzero), it follows from \cref{rem:order-of-zeros} that $fg$ has a zero of order $n+m > 0$ at $z_0$.
+\end{solution}
+
+
+\chapter{Logarithms, Winding Numbers and Cauchy's Theorem}
+
+\newcommand{\Ind}{\mathrm{Ind}}
+\newcommand{\Res}{\mathrm{Res}}
+
+\begin{exerciseframed}[4.1]
+    Show directly from the definition that $\Ind(\boundary D(a,r), a) = 1$ for any $a \in \complex$ and $r > 0$.
+\end{exerciseframed}
+
+\begin{solution}
+    Since $\boundary D(a,r)$ is smooth we have
+    %
+    \begin{equation*}
+        \Ind(\boundary D(a,r), a)
+            = \frac{1}{2\pi\iu} \int_{\boundary D(a,r)} \frac{\dif z}{z - a}
+            = \frac{1}{2\pi\iu} \int_0^1 \frac{2\pi\iu\e^{2\pi\iu t}}{\e^{2\pi\iu t}} \dif t
+            = 1.
+    \end{equation*}
+\end{solution}
+
+
+\begin{exerciseframed}[4.2]
+    Suppose $a \in \complex$ and $r > 0$. Show that
+    %
+    \begin{equation*}
+        \Ind(\boundary D(a,r), z) =
+        \begin{cases}
+            1, & \abs{z - a} < r, \\
+            0, & \abs{z - a} > r.
+        \end{cases}
+    \end{equation*}
+\end{exerciseframed}
+
+\begin{solution}
+    By Proposition~4.7, the index is constant on the components of $\complex \setminus \boundary D(a,r)$ and $0$ on the unbounded component. The claim then follows from Exercise~4.1.
+\end{solution}
+
+
+\begin{exerciseframed}[4.7]
+    \begin{enumerate}
+        \item Suppose that $f$ and $g$ are holomorphic near $z_0$ and $f$ has a simple zero at $z_0$. Find an expression for the residue of $g/f$ at $z_0$.
+        
+        \item Suppose that $f$ has a simple pole at $z_0$ and $g$ is holomorphic near $z_0$. Show that
+        %
+        \begin{equation*}
+            \Res(fg, z_0)
+                = g(z_0) \Res(f, z_0).
+        \end{equation*}
+        
+        \item Suppose that $f$ is holomorphic in a neighborhood of $z_0$, set $g(z) = f(z)/(z-z_0)^n$, and show that
+        %
+        \begin{equation*}
+            \Res(g,z_0)
+                = f^{(n-1)}(z_0)/(n-1)!.
+        \end{equation*}
+    \end{enumerate}
+\end{exerciseframed}
+
+\begin{solution}
+\begin{solutionsec}
+    \item By [TODO ref] Exercise~3.20 $g/f$ has a zero of order $N \geq -1$ at $z_0$. If $N = -1$, the residue is then, by the calculations on p.~71,
+    %
+    \begin{equation*}
+        \Res(g/f, z_0)
+            = \lim_{z \to z_0} (z - z_0) \frac{g(z)}{f(z)}
+            = \lim_{z \to z_0} g(z) \frac{z - z_0}{f(z) - f(z_0)}
+            = \frac{g(z_0)}{f'(z_0)}.
+    \end{equation*}
+    %
+    If instead $N \geq 0$, then $g$ has a zero of order at least $1$ at $z_0$, in which case $g(z_0)$. But in this case $g/f$ has a removable singularity at $z_0$, so its residue at $z_0$ is $0$, so the formula also holds in this case.
+
+    \item Notice that $1/f$ has a simple zero at $z_0$ by Exercise~3.20, so part (i) implies that
+    %
+    \begin{align*}
+        \Res(fg, z_0)
+            &= \frac{g(z_0)}{(1/f)'(z_0)} \\
+            &= g(z_0) \frac{1}{(1/f)'(z_0)} \\
+            &= g(z_0) \Res(1/(1/f), z_0) \\
+            &= g(z_0) \Res(f, z_0).
+    \end{align*}
+
+    \item This is obvious from the calculations on p.~71.
+\end{solutionsec}
+\end{solution}
+
+
+\begin{exerciseframed}[4.8]
+    Suppose that $f$ has an isolated singularity at $z_0$. Fix $r > 0$ and $n \in \ints$, and define $\gamma \colon [0, 2\pi] \to \complex$ by
+    %
+    \begin{equation*}
+        \gamma(t)
+            = z_0 + r \e^{\iu n t}.
+    \end{equation*}
+    %
+    Show that $\Ind(\gamma,z_0) = n$ and that
+    %
+    \begin{equation*}
+        \frac{1}{2\pi\iu} \int_\gamma f(z) \dif z
+            = \Ind(\gamma,z_0) \Res(f,z_0)
+    \end{equation*}
+    %
+    if $r > 0$ is small enough.
+\end{exerciseframed}
+
+\begin{solution}
+    Both sides are zero if $n = 0$, so we may assume that $n \neq 0$. Since $\gamma$ is smooth we have
+    %
+    \begin{equation*}
+        \Ind(\gamma, z_0)
+            = \frac{1}{2\pi\iu} \int_{\gamma} \frac{\dif z}{z - a}
+            = \frac{1}{2\pi\iu} \int_0^{2\pi} \frac{\iu n\e^{\iu nt}}{\e^{\iu nt}} \dif t
+            = n.
+    \end{equation*}
+    %
+    Assume that $n > 0$ and notice that $\gamma$ is an $n$-fold sum
+    %
+    \begin{equation*}
+        \gamma
+            = \boundary D(z_0,r) \mathbin{\dot{+}} \cdots \mathbin{\dot{+}} \boundary D(z_0,r),
+    \end{equation*}
+    %
+    so that
+    %
+    \begin{align*}
+        \frac{1}{2\pi\iu} \int_\gamma f(z) \dif z
+            &= \frac{n}{2\pi\iu} \int_{\boundary D(z_0,r)} f(z) \dif z \\
+            &= n \Res(f,z_0) \\
+            &= \Ind(\gamma,z_0) \Res(f,z_0),
+    \end{align*}
+    %
+    where the second equality follows from Theorem~4.11 as on p.~72. Here we choose $r$ such that $r < R$ and $f$ is holomorphic on $D'(z_0,R)$ for some $R$. Substituting $-n$ for $n$ changes sign on the integral on the left-hand side and on $\Ind(\gamma,z_0)$, proving the claim.
+\end{solution}
+
+\end{document}
