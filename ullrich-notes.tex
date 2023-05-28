@@ -214,6 +214,7 @@
 \newcommand{\matgroup}[3]{\mathrm{#1}_{#2}(#3)}
 \newcommand{\GL}[2]{\matgroup{GL}{#1}{#2}}
 \newcommand{\SL}[2]{\matgroup{SL}{#1}{#2}}
+\newcommand{\PSL}[2]{\matgroup{PSL}{#1}{#2}}
 \newcommand{\catGSet}[1][G]{{#1\text{-}\catSet}}
 \newcommand{\frakI}{\mathfrak{I}}
 \newcommand{\field}{\mathbb{F}}
@@ -606,6 +607,68 @@
     \end{align*}
     %
     where the second equality follows from Theorem~4.11 as on p.~72. Here we choose $r$ such that $r < R$ and $f$ is holomorphic on $D'(z_0,R)$ for some $R$. Substituting $-n$ for $n$ changes sign on the integral on the left-hand side and on $\Ind(\gamma,z_0)$, proving the claim.
+\end{solution}
+
+
+\addtocounter{chapter}{3}
+\chapter{Conformal Mappings}
+
+\newcommand{\disk}{\mathbb{D}}
+
+\begin{exerciseframed}[8.7]
+    Suppose that $\psi \in \Aut(\Pi^+)$. Show that there exist $a,b,c,d \in \reals$ with $ad-bc = 1$, such that
+    %
+    \begin{equation*}
+        \psi(z)
+            = \frac{az + b}{cz + d}
+    \end{equation*}
+    %
+    for all $z \in \Pi^+$. Show that $a,b,c,d$ are not unique but are almost unique.
+\end{exerciseframed}
+
+\begin{solution}
+    First notice that $\phi_C\inv \circ \psi \circ \phi_C \in \Aut(\disk)$, where $\phi_C \colon \disk \to \Pi^+$ is the Cayley transform. Hence this is a Möbius transformation by Theorem~8.4.3, so $\psi$ is as well.
+
+    Since $\psi$ is also a homeomorphism $\complex_\infty \to \complex_\infty$, it preserves the boundary of the upper hemisphere, which is precisely the one-point compactification $\reals^*$ of the real line. For $i = 1,2,3$ choose distinct $z_i \in \reals \setminus \{d/c\}$ such that $w_i \defn \psi(z_i) \in \reals$. Then the $w_i$ are also distinct, so Theorem~8.2.2 implies that $\psi$ is unique among Möbius transformations with this property. Now recall that the coefficients $a,b,c,d$ are unique up to multiplication by a nonzero scalar, so we may assume that $b \in \{0,1\}$. Given $b$ the remaining coefficients are thus uniquely determined. We claim that they are also real.
+
+    Consider the linear system of equations
+    %
+    \begin{equation*}
+        \begin{pmatrix}
+            -z_1 & z_1 w_1 & w_1 \\
+            -z_2 & z_2 w_2 & w_2 \\
+            -z_3 & z_3 w_3 & w_3
+        \end{pmatrix}
+        \begin{pmatrix}
+            a \\ c \\ d
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+            b \\ b \\ b
+        \end{pmatrix}
+    \end{equation*}
+    %
+    in the variables $a,c,d$. This has a unique solution by uniqueness of $\psi$, so the matrix on the left-hand side is invertible. But it has real entries, and so does the vector on the right-hand side, so $a,c,d$ must also be real.
+
+    Next notice that if $z \in \Pi^+$ then
+    %
+    \begin{equation*}
+        \frac{az + b}{cz + d}
+            = \frac{ac \abs{z}^2 + bd + adz + bc\conj{z}}{\abs{cz + d}^2},
+    \end{equation*}
+    %
+    so
+    %
+    \begin{equation*}
+        \Im \frac{az + b}{cz + d}   
+            = \frac{(ad-bc) \Im z}{\abs{cz + d}^2},
+    \end{equation*}
+    %
+    and for this to lie in $\Pi^+$ we must have $ad-bc > 0$. Hence by dividing each coefficient by $\sqrt{ad - bc}$ we may assume that $ad - bc = 1$.
+    
+    Furthermore, this argument shows that any Möbius transformation $\phi$ with real coefficients and determinant $1$ maps $\Pi^+$ into itself. But its inverse as a map $\complex_\infty \to \complex_\infty$ is also a Möbius transformation with real coefficients and determinant $1$, so this is also an endomorphism on $\Pi^+$. Hence $\phi$ is in fact an automorphism on $\Pi^+$.
+
+    Finally, consider the (well-defined) homomorphism $\SL{2}{\reals} \to \Aut(\Pi^+)$ given by $A \mapsto \phi_A$. Its kernel is the subgroup of real scalar multiples of the identity matrix $I$ whose determinant is $1$. But this is just $\{I,-I\}$, so we find that $\Aut(\Pi^+) \cong \SL{2}{\reals}/\{I,-I\} = \PSL{2}{\reals}$.
 \end{solution}
 
 \end{document}
