@@ -671,4 +671,56 @@
     Finally, consider the (well-defined) homomorphism $\SL{2}{\reals} \to \Aut(\Pi^+)$ given by $A \mapsto \phi_A$. Its kernel is the subgroup of real scalar multiples of the identity matrix $I$ whose determinant is $1$. But this is just $\{I,-I\}$, so we find that $\Aut(\Pi^+) \cong \SL{2}{\reals}/\{I,-I\} = \PSL{2}{\reals}$.
 \end{solution}
 
+
+\chapter{Normal Families and the Riemann Mapping Theorem}
+
+\begin{remarkbreak}[Equivalent quasi-metrics]
+    Let $(X,d)$ be a metric space, and let $\psi$ be as in Lemma~9.1.2. We claim that $d$ and $\tilde{d} \defn \psi \circ d$ are equivalent. It suffices to show that any $d$-ball centred at $x \in X$ contains a $\tilde{d}$-ball centred at $x$, and vice-versa.
+
+    Let $\epsilon > 0$ and choose $\delta > 0$ such that $\abs{t} < \delta$ implies $\abs{\psi(t)} < \epsilon$ for all $t \in [0,\infty)$. If $d(y,x) < \delta$ then $\tilde{d}(y,x) < \epsilon$, so $B_d(x,\delta) \subseteq B_{\tilde{d}}(x,\epsilon)$. Conversely, let $\epsilon > 0$ and put $\delta = \psi(\epsilon) > 0$. Then if
+    %
+    \begin{equation*}
+        \psi(d(y,x))
+            = \tilde{d}(y,x)
+            < \delta
+            = \psi(\epsilon),
+    \end{equation*}
+    %
+    then since $\psi$ is increasing we have $d(y,x) < \epsilon$. Hence $B_{\tilde{d}}(x,\delta) \subseteq B_d(x,\epsilon)$. Notice that in both cases, $\delta$ only depends on $\epsilon$ and not on $x$.
+
+    We next show that Cauchy sequences with respect to $d$ and $\tilde{d}$ agree. If $(x_n)_{n \in \naturals}$ is a $d$-Cauchy sequence, then continuity of $\psi$ at $0$ implies that $(x_n)$ is also a $\tilde{d}$-Cauchy sequence. Conversely, assume that $(x_n)$ is not a $d$-Cauchy sequence. Then there exists an $\epsilon > 0$ such that given any $N \in \naturals$ there are $m,n \geq N$ with $d(x_m,x_n) \geq \epsilon$. But then $\tilde{d}(x_m,x_n) \geq \psi(\epsilon) > 0$, so $(x_n)$ is not a $\tilde{d}$-Cauchy sequence.
+\end{remarkbreak}
+
+
+\begin{remarkbreak}[Product metrics??]
+    Let $(d_j)_{j \in \naturals}$ be a family of quasi-metrics on $X$, and let $\tilde{d}_j = \psi \circ d_j$ be an equivalent metric with $\tilde{d}_j \leq 1$ for all $j \in \naturals$. The formula
+    %
+    \begin{equation*}
+        d(x,y)
+            = \sum_{j=1}^\infty 2^{-j} \tilde{d}_j(x,y)
+    \end{equation*}
+    %
+    then defines a quasi-metric on $X$ as in Lemma~9.1.3. It is clear that a sequence converges with respect to $d$ if and only if it converges with respect to each $\tilde{d}_j$, which by the above remark is equivalent to convergence with respect to each $d_j$. Furthermore, if $(x_n)$ is $d$-Cauchy then it is clearly $d_j$-Cauchy (in particular, if each $d_j$ is complete then $d$ is also complete), but it is not clear that the converse holds.
+
+    Next notice that $\tilde{d}_j \leq d$, so $B_d(x,r) \subseteq B_{\tilde{d}_j}(x,r)$. By the previous remark, for every $\epsilon > 0$ there is an $r_j > 0$ such that
+    %
+    \begin{equation*}
+        B_d(x,r_j)
+            \subseteq B_{\tilde{d}_j}(x,r_j)
+            \subseteq B_{d_j}(x,\epsilon).
+    \end{equation*}
+    %
+    If $N \in \naturals$ and $r = \min\{r_1, \ldots, r_N\}$, then $B_d(x,r) \subseteq B_{d_j}(x,\epsilon)$. It follows that
+    %
+    \begin{equation*}
+        B_d(x,r)
+            \subseteq B_{d_1}(x,\epsilon) \intersect \cdots \intersect B_{d_N}(x,\epsilon)
+            = B_N(x,\epsilon),
+    \end{equation*}
+    %
+    proving Lemma~9.1.5(iii). This also implies, as in the previous remark, that $B_N(x,\epsilon)$ is $d$-open, proving (i).
+
+    As far as I can tell, part (ii) does not hold for all functions $\psi$. But assume that $\psi(t) \leq t$ for all $t \in [0,\infty)$ (notice that both $t \mapsto t \meet 1$ and $t \mapsto t/(1+t)$ have this property). Then Ullrich's argument goes through as stated.
+\end{remarkbreak}
+
 \end{document}
